@@ -3,13 +3,35 @@ using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace BlobSasGenerator
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] args) => CommandLineApplication.Execute<Program>(args);
+
+        [Argument(0)]
+        private string BlobName { get; }
+
+        [Argument(1)]
+        private string BlobContainerName { get; }
+
+        [Argument(2)]
+        private string AccountName { get; }
+
+        [Argument(3)]
+        private string AccountKey { get; }
+
+        private void OnExecute()
         {
+            var connectionString =
+                $"DefaultEndpointsProtocol=https;AccountName={AccountName};AccountKey={AccountKey};EndpointSuffix=core.windows.net";
+
+            var container = new BlobContainerClient(connectionString, BlobContainerName);
+            var key = new StorageSharedKeyCredential(AccountName, AccountKey);
+
+            Console.Write(GetBlobSasUri(container, BlobName, key));
 
         }
 
@@ -17,11 +39,11 @@ namespace BlobSasGenerator
             string blobName, StorageSharedKeyCredential key, string storedPolicyName = null)
         {
             // Create a SAS token that's valid for one hour.
-            BlobSasBuilder sasBuilder = new BlobSasBuilder()
+            var sasBuilder = new BlobSasBuilder()
             {
                 BlobContainerName = container.Name,
                 BlobName = blobName,
-                Resource = "b",
+                Resource = "b"
             };
 
             if (storedPolicyName == null)
@@ -36,12 +58,12 @@ namespace BlobSasGenerator
             }
 
             // Use the key to get the SAS token.
-            string sasToken = sasBuilder.ToSasQueryParameters(key).ToString();
+            var sasToken = sasBuilder.ToSasQueryParameters(key).ToString();
 
             Console.WriteLine("SAS for blob is: {0}", sasToken);
             Console.WriteLine();
 
-            return container.GetBlockBlobClient(blobName).Uri + sasToken;
+            return $"{container.GetBlockBlobClient(blobName).Uri}?{sasToken}" ;
         }
     }
 }

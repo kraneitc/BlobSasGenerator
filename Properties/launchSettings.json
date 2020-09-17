@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BlobSasGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "\"J1024857-HHLGK-Work-1.png\" \"aat-attachments\" \"sapnomsqasaataesa\" \"WjKTJoWoyywVFsxbJkUUdro6HXeDH+s4VDy+e+iopt69mVH2BbRFxaGMB/Xro/6vfXzVNeRFsyQ/uPpDY7aoeg==\""
+    }
+  }
+}
