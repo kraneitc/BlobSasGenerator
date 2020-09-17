@@ -63,7 +63,8 @@ namespace BlobSasGenerator
             Console.WriteLine("SAS for blob is: {0}", sasToken);
             Console.WriteLine();
 
-            return $"{container.GetBlockBlobClient(blobName).Uri}?{sasToken}" ;
+            return $"{container.GetBlockBlobClient(blobName).Uri}?{sasToken}";
+            //return container.GetBlockBlobClient(blobName).Uri + sasToken;
         }
     }
 }
